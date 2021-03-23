@@ -1,0 +1,4 @@
+
+<app-create (personAdded)="savePerson($event)" (personDeleted)="deletePerson($event)" [personToUpdate]="personSelected" (personGoBack)="changePersonValue()"></app-create>
+<br>
+<app-personne-list [personsList]="persons" (personSelected)="onPersonnePressed($event)"></app-personne-list>
