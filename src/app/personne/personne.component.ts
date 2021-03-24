@@ -1,4 +1,4 @@
-import { Input, Output,EventEmitter } from '@angular/core';
+import { Input, Output, EventEmitter } from '@angular/core';
 import { Component, OnChanges, OnInit, SimpleChange, SimpleChanges } from '@angular/core';
 
 import { PersonneService } from '../services/personne.service';
@@ -9,64 +9,91 @@ import { Personne } from './personne.model';
   selector: 'app-personne',
   templateUrl: './personne.component.html',
   styleUrls: ['./personne.component.css'],
-  providers:[PersonneService]
+  providers: [PersonneService]
 })
 export class PersonneComponent implements OnInit {
-  @Output() showPersonDetail = new EventEmitter<Personne>();
-  persons:Personne[];
-  personSelected:Personne;
-  constructor(private personsService:PersonneService,) { 
-    
-  }
-  
-  
+  /**
+   * Liste de personnes
+   */
+  persons: Personne[];
+  /**
+   * Objet personne sélectionnée
+   */
+  personSelected: Personne;
+
+  /**
+   * 
+   * @param personsService Service de personne pour utiliser toutes les opérations sur l'API REST
+   */
+  constructor(private personsService: PersonneService,) {}
+
+
   ngOnInit(): void {
-    this.personsService.getAllPersons().subscribe(response=>{
-      this.persons= response;
-  },
-  error=>console.log(error));
-    
+    this.personsService.getAllPersons().subscribe(response => {
+      this.persons = response;
+    },
+      error => console.log(error));
+
   }
 
-
-  onPersonnePressed(personne:Personne){
+/**
+ * Méthode qui notifiera le composant des 
+ * données de la personne à modifier ou à supprimer
+ * @param personne Personne personne choisie 
+ * pour modifier ou supprimer
+ */
+  onPersonnePressed(personne: Personne) {
     this.personSelected = personne;
   }
 
-  savePerson(person:Personne):void{
-    if(person.id !==null){
-      this.personsService.updatePersonDb(person,person.id).subscribe(resp=>{
-        const position=this.persons.map(item=> item.id).indexOf(person.id);
+  /**
+  * Méthode pour mise a jour ou ajouter une nouvelle personne 
+  * si la personne a un identifiant les données seront mises à jour 
+  * sinon une nouvelle sera ajoutée
+  * @param person avec le données de la personne à sauver o a mettre a jour
+  */
+  savePerson(person: Personne): void {
+    if (person.id !== null) {
+      this.personsService.updatePersonDb(person, person.id).subscribe(resp => {
+        const position = this.persons.map(item => item.id).indexOf(person.id);
         this.persons[position] = person;
         this.personSelected = undefined;
       },
-      error=>{console.error(error)}
+        error => { console.error(error) }
       )
-    }else{
-      this.personsService.savePersonDb(person).subscribe(resp =>{
+    } else {
+      this.personsService.savePersonDb(person).subscribe(resp => {
         this.persons.push(resp);
-       },
-       error => {console.error(error)})  
+      },
+        error => { console.error(error) })
     }
-    
 
- 
- }
 
- deletePerson(person:Personne){
-  this.personsService.deletePersonDb(person.id).subscribe(resp =>{
-    this.personSelected = undefined;
-    let nPerson = [];
-    this.persons.forEach(item=>{
-      if(item.id!=person.id)nPerson.push(item);
+
+  }
+  /**
+   * Méthode pour supprimer une personne
+   * @param person avec le données de la personne á supprimer
+   */
+  deletePerson(person: Personne) {
+    this.personsService.deletePersonDb(person.id).subscribe(resp => {
+      this.personSelected = undefined;
+      let nPerson = [];
+      this.persons.forEach(item => {
+        if (item.id != person.id) nPerson.push(item);
+      })
+      this.persons = nPerson;
     })
-    this.persons = nPerson;
-  })
-}
-changePersonValue(){
-  this.personSelected=undefined;
-}
+  }
+  /**
+   * méthode qui mettra à jour la valeur du champ personSelected
+   * pour notifier au composant que l'utilisateur ne souhaite plus
+   * modifier les données d'une personne
+   */
+  changePersonValue() {
+    this.personSelected = undefined;
+  }
 
- 
+
 
 }
