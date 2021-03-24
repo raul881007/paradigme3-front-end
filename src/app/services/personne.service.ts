@@ -40,7 +40,7 @@ export class PersonneService {
      return this.httpClient.post(this.urlConnection,personne);
    }
    /**
-    * Méthode pour supprimer le personne
+    * Méthode pour supprimer la personne
     * @param idPersonne number avec l'identifiant de la personne
     * @returns connexion à la méthode DELETE avec le résultat
     */
@@ -48,7 +48,7 @@ export class PersonneService {
      return this.httpClient.delete(this.urlConnection+idPersonne);
    }
    /**
-    * Methode pour mettre a jour le personne
+    * Methode pour mettre a jour la personne
     * @param personne Objet Personne avec les données à insérer
     * @param idPersonne number avec l'identifiant de la personne
     * @returns connexion à la méthode PUT avec le résultat
